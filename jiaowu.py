@@ -38,7 +38,7 @@ class JiaoWu:
         self.user = user
         self.pwd = pwd
         self.request_operator.headers = self.header
-        self.sign = "7062a59c3f889c80af904760f7fa99"  # 登陆需要的一个神秘代码，在教务网获得，有时效
+        self.sign = ""  # 登陆需要的一个神秘代码，在教务网获得，有时效
 
     def jiaowu_login(self, url="http://jiaowu.sicau.edu.cn/jiaoshi/bangong/check.asp", lb="S"):
         data = {"user": self.user, "pwd": self.pwd, "lb": lb, "sign": self.sign}
