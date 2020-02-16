@@ -62,11 +62,28 @@ class JiaoWu:
         soup = BeautifulSoup(file, "html.parser")
         self.sign = soup.form.find_all("input")[-1]["value"]
 
+    def get_term_lessons(self, url="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xuankeshow.asp"):
+        """
+        取得课程列表，需要前置执行 get_term_cookies
+        :param url:
+        :return:
+        """
+        x = self.request_operator.get(url)
+        x.raise_for_status()
+        x.encoding = x.apparent_encoding
+        save_raw_html(x)
+
+    def get_term_cookies(self, xueqi="", api="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp"):
+        # cookie获得 http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp?xueqi=2019-2020-2
+        url = api + "?" + xueqi
+        x = self.request_operator.get(url)
+        x.raise_for_status()
+
 
 class Timetable:
-    def __init__(self, raw_file):
+    def __init__(self, raw_file, parser="html.parser"):
         self.raw_file = raw_file
-        self.soup = BeautifulSoup(raw_file, "html.parser")
+        self.soup = BeautifulSoup(raw_file, parser)
         self.baked_data = None
 
     def process_html(self):  # 处理课表的HTML文件
