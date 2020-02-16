@@ -46,13 +46,11 @@ class JiaoWu:
         x = self.request_operator.post(url, data=data)
         x.raise_for_status()
         x.encoding = x.apparent_encoding
-        # print(x.text)
 
     def get_timetable(self, url="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/zxian_rw_list.asp"):
         x = self.request_operator.get(url)
         x.raise_for_status()
         x.encoding = x.apparent_encoding
-        # print(x.content.decode("utf-8"))
         save_raw_html(x)
 
     def get_sign_code(self):
@@ -63,7 +61,6 @@ class JiaoWu:
         file = open("./Temp", "rb")
         soup = BeautifulSoup(file, "html.parser")
         self.sign = soup.form.find_all("input")[-1]["value"]
-        # print(type(self.sign))
 
 
 class Timetable:
@@ -101,50 +98,3 @@ if __name__ == "__main__":
     tb = Timetable(open("./Temp", "rb"))
     tb.process_html()
     os.system("pause")
-
-    # jw.jiaowu_login()
-    # jw.get_timetable()
-    # jw.get_timetable()
-    # jw.get_sign_code()
-    # os.system("pause")
-
-    # ptb = PrettyTable()
-    # ptb.field_names = ["序号1",
-    #                    "编号2",
-    #                    "课程3",
-    #                    "分组编号4",
-    #                    "教师5",
-    #                    "周次6",
-    #                    "上课时间7",
-    #                    "排课类别8",
-    #                    "课程性质9",
-    #                    "开课平台10",
-    #                    "教学方式11",
-    #                    "在线课程名称12",
-    #                    "QQ群号13",
-    #                    "开课网址14",
-    #                    "备注15",
-    #                    "查看网站16"
-    #                    ]
-    #
-    # ptb.field_names = ["课程3",
-    #                    "教师5",
-    #                    "周次6",
-    #                    "上课时间7",
-    #                    "QQ群号13",
-    #                    "开课网址14"
-    #                    ]
-    #
-    # factIndex = [2,4,5,6,12,13]
-    #
-    # tb = Timetable(open("./raw_html.html"))
-    # # 遍历所有课程
-    # for i in range(len(tb.soup.find_all('table')[4].find_all('tr')) - 1):
-    #     i += 1
-    #     one_lesson = []
-    #     for j in factIndex:
-    #         one_lesson.append(tb.soup.find_all('table')[4].find_all('tr')[i].find_all('td')[j].get_text())
-    #     ptb.add_row(one_lesson)
-    # print(ptb)
-
-    # ptb.add_row()
