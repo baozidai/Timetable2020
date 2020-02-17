@@ -104,6 +104,20 @@ class Timetable:
             ptb.add_row(one_lesson)
         print(ptb)
 
+    def process_html_normal_term(self):
+        # TODO： 解析数据形成json或者其他格式
+        """
+        解析正常的课表
+        :return:
+        """
+        index = [2, 9, 10, 11, 12]
+        for i in range(len(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")) - 1):
+            a_course_info = self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")
+            if a_course_info[9].get_text() != "":
+                for j in index:
+                    print(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")[
+                              j].get_text(), end=" ")
+                print("")
 
 if __name__ == "__main__":
     user = input("请输入学号\n")
