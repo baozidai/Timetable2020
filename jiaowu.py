@@ -38,7 +38,7 @@ class JiaoWu:
         self.user = user
         self.pwd = pwd
         self.request_operator.headers = self.header
-        self.sign = "7062a59c3f889c80af904760f7fa99"  # 登陆需要的一个神秘代码，在教务网获得，有时效
+        self.sign = ""  # 登陆需要的一个神秘代码，在教务网获得，有时效
 
     def jiaowu_login(self, url="http://jiaowu.sicau.edu.cn/jiaoshi/bangong/check.asp", lb="S"):
         data = {"user": self.user, "pwd": self.pwd, "lb": lb, "sign": self.sign}
@@ -62,11 +62,28 @@ class JiaoWu:
         soup = BeautifulSoup(file, "html.parser")
         self.sign = soup.form.find_all("input")[-1]["value"]
 
+    def get_term_lessons(self, url="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xuankeshow.asp"):
+        """
+        取得课程列表，需要前置执行 get_term_cookies
+        :param url:
+        :return:
+        """
+        x = self.request_operator.get(url)
+        x.raise_for_status()
+        x.encoding = x.apparent_encoding
+        save_raw_html(x)
+
+    def get_term_cookies(self, xueqi="", api="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp"):
+        # cookie获得 http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp?xueqi=2019-2020-2
+        url = api + "?" + xueqi
+        x = self.request_operator.get(url)
+        x.raise_for_status()
+
 
 class Timetable:
-    def __init__(self, raw_file):
+    def __init__(self, raw_file, parser="html.parser"):
         self.raw_file = raw_file
-        self.soup = BeautifulSoup(raw_file, "html.parser")
+        self.soup = BeautifulSoup(raw_file, parser)
         self.baked_data = None
 
     def process_html(self):  # 处理课表的HTML文件
@@ -87,6 +104,20 @@ class Timetable:
             ptb.add_row(one_lesson)
         print(ptb)
 
+    def process_html_normal_term(self):
+        # TODO： 解析数据形成json或者其他格式
+        """
+        解析正常的课表
+        :return:
+        """
+        index = [2, 9, 10, 11, 12]
+        for i in range(len(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")) - 1):
+            a_course_info = self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")
+            if a_course_info[9].get_text() != "":
+                for j in index:
+                    print(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")[
+                              j].get_text(), end=" ")
+                print("")
 
 if __name__ == "__main__":
     user = input("请输入学号\n")
