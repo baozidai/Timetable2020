@@ -125,14 +125,28 @@ class Timetable:
         解析正常的课表
         :return:
         """
-        index = [2, 9, 10, 11, 12]
+
+        ptb = PrettyTable(encoding="UTF-8")
+        ptb.field_names = ["课程",
+                           "性质",
+                           "上课时间",
+                           "教室",
+                           "周次",
+                           "教师"
+                           ]
+        index = [2, 3, 9, 10, 11, 12]
         for i in range(len(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")) - 1):
             a_course_info = self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")
+            one_lesson = []
             if a_course_info[9].get_text() != "":
                 for j in index:
-                    print(self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")[
-                              j].get_text(), end=" ")
-                print("")
+                    temp: str = self.soup.find_all("div")[2].find_all("table")[1].find_all("tr")[i + 1].find_all("td")[
+                        j].get_text()
+                    temp = rome_interger_replace(temp)
+                    one_lesson.append(temp)
+                ptb.add_row(one_lesson)
+        print(ptb)
+
 
 if __name__ == "__main__":
     user = input("请输入学号\n")
