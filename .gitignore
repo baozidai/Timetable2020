@@ -70,3 +70,7 @@ dist/
 .idea/
 package-lock.json
 node_modules/
+resource/
+package.json
+__pycache__/
+mykey
