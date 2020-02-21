@@ -13,6 +13,21 @@ from bs4 import BeautifulSoup
 from prettytable import PrettyTable
 
 
+def check(the_str, target, replacer):
+    if the_str.find(target) > 0:
+        return the_str.replace(target, replacer)
+    else:
+        return the_str
+
+
+def rome_interger_replace(old_str: str):
+    temp = old_str
+    replace_dic = (["Ⅰ", "I"], ["Ⅲ", "III"], ["Ⅳ", "IV"])
+    for i, j in replace_dic:
+        temp = check(temp, i, j)
+    return temp
+
+
 def save_raw_html(res):
     with open("Temp", "wb+") as f:
         f.write(res.content)
