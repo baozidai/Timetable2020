@@ -111,11 +111,11 @@ class Timetable:
                            "开课网址"
                            ]
         index = [2, 4, 5, 6, 12, 13]
-        for i in range(len(self.soup.find_all('table')[4].find_all('tr')) - 1):
+        for i in range(len(self.soup.find_all('table')[5].find_all('tr')) - 1):
             i += 1
             one_lesson = []
             for j in index:
-                one_lesson.append(self.soup.find_all('table')[4].find_all('tr')[i].find_all('td')[j].get_text())
+                one_lesson.append(self.soup.find_all('table')[5].find_all('tr')[i].find_all('td')[j].get_text())
             ptb.add_row(one_lesson)
         print(ptb)
 
