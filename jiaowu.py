@@ -34,7 +34,9 @@ def save_raw_html(res):
 
 
 class JiaoWu:
-
+    """
+    教务类: 用于教务网页的爬取相关工作(可能的联网工作以及其他的工作)
+    """
     def __init__(self, user, pwd):
         self.header = {"Host": "jiaowu.sicau.edu.cn",
                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0",
@@ -56,6 +58,12 @@ class JiaoWu:
         self.sign = ""  # 登陆需要的一个神秘代码，在教务网获得，有时效
 
     def jiaowu_login(self, url="http://jiaowu.sicau.edu.cn/jiaoshi/bangong/check.asp", lb="S"):
+        """
+        教务登陆,实例化教务类的session(cookie相关)
+        :param url: 登陆API
+        :param lb: 登陆身份 另一个是T 教师
+        :return:
+        """
         data = {"user": self.user, "pwd": self.pwd, "lb": lb, "sign": self.sign}
         self.request_operator = requests.session()
         x = self.request_operator.post(url, data=data)
@@ -63,12 +71,21 @@ class JiaoWu:
         x.encoding = x.apparent_encoding
 
     def get_timetable(self, url="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/zxian_rw_list.asp"):
+        """
+        获取2020在线网课课表
+        :param url: API
+        :return:
+        """
         x = self.request_operator.get(url)
         x.raise_for_status()
         x.encoding = x.apparent_encoding
         save_raw_html(x)
 
     def get_sign_code(self):
+        """
+        取得登录神秘代码
+        :return:
+        """
         url = "http://jiaowu.sicau.edu.cn/web/web/web/index.asp"
         x = requests.get(url)
         with open("Temp", "wb+") as f:
@@ -89,6 +106,12 @@ class JiaoWu:
         save_raw_html(x)
 
     def get_term_cookies(self, xueqi="", api="http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp"):
+        """
+        取得某一学期的cookie,实现分学期选课
+        :param xueqi: 学期 上学期是1 下学期是2 2019-2020-1 2019-2020-2
+        :param api:
+        :return:
+        """
         # cookie获得 http://jiaowu.sicau.edu.cn/xuesheng/gongxuan/gongxuan/xszhinan.asp?xueqi=2019-2020-2
         url = api + "?" + xueqi
         x = self.request_operator.get(url)
@@ -101,7 +124,7 @@ class Timetable:
         self.soup = BeautifulSoup(raw_file, parser)
         self.baked_data = None
 
-    def process_html(self):  # 处理课表的HTML文件
+    def process_html(self):  # 处理网课课表的HTML文件
         ptb = PrettyTable()
         ptb.field_names = ["课程",
                            "教师",
@@ -119,7 +142,7 @@ class Timetable:
             ptb.add_row(one_lesson)
         print(ptb)
 
-    def process_html_normal_term(self):
+    def process_html_normal_term(self):  # 处理常规课表HTML
         # TODO： 解析数据形成json或者其他格式
         """
         解析正常的课表
@@ -155,6 +178,6 @@ if __name__ == "__main__":
     jw.get_sign_code()
     jw.jiaowu_login()
     jw.get_timetable()
-    tb = Timetable(open("./Temp", "rb"))
+    tb = Timetable(open("./Temp", "rb"))  # 若需要封装exe,必修按 rb 形式读出
     tb.process_html()
     os.system("pause")
